@@ -1,11 +1,11 @@
 from django.conf.urls import url
 from . import views
-import os
-import time
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^index/', views.home_page, name='home_page'),
-    url(r'^login', views.login, name='login'),
-
+    url(r'^$', views.login, name='login'),
+    url(r'^login/$',views.login),
+    url(r'^logout/$',views.logout),
+    url(r'^index/', views.login, name='index'),
+    url(r'^host/serverlist/$', views.serverList, name='server_list'),
+    url(r'^host/serverlist/(.+)/$', views.serverList, name='server_delete'),
 ]
