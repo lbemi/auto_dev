@@ -19,11 +19,17 @@
             <div class="user_list_ls">
                 <div class="panel panel-default" style="width:34.5%;float: left;height:648px;margin-right: 0.5%;">
                     <div class="panel-heading">
-                        自动部署salt-minion
+                        添加主机
                     </div>
                     <div class="panel-body form-group" style="margin-bottom:0;">
                         <form method="post" enctype="multipart/form-data" class="form-horizontal">
                             {% csrf_token %}
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">主机名：</label>
+                                <div class="col-sm-2" style="width:60%;">
+                                    {{ form.add_hostname }}
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">IP：</label>
                                 <div class="col-sm-2" style="width:60%;">
@@ -31,15 +37,33 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Username：</label>
+                                <label class="col-sm-2 control-label">端口：</label>
+                                <div class="col-sm-2" style="width:60%;">
+                                    {{ form.add_port }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">用户：</label>
                                 <div class="col-sm-2" style="width:60%;">
                                     {{ form.add_username }}
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Password：</label>
+                                <label class="col-sm-2 control-label">密码：</label>
                                 <div class="col-sm-2" style="width:60%;">
                                     {{ form.add_password }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">对外端口：</label>
+                                <div class="col-sm-2" style="width:60%;">
+                                    {{ form.add_outport }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">工作目录：</label>
+                                <div class="col-sm-2" style="width:60%;">
+                                    {{ form.add_work_dir }}
                                 </div>
                             </div>
                                 <div class="col-sm-1 col-sm-offset-2"  style="margin-left:0">

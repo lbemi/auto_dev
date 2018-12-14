@@ -10,6 +10,7 @@ class hostinfo(models.Model):
     Host_user = models.CharField(u'用户名',max_length=255)
     Password = models.CharField(u'密码', max_length=50)
     Work_dir = models.CharField(u'工作目录', max_length=255)
+    Out_port = models.CharField(u'对外开放端口', max_length=255)
 
 
     def __str__(self):

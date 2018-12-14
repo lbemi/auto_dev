@@ -1,5 +1,5 @@
 from django.shortcuts import render, render_to_response
-from u_app.forms import UserForm,RegisterForm,AlterForm,hostadimnForm,monitorForm,autoArrMinionForm
+from u_app.forms import UserForm,autoArrMinionForm
 from django.contrib import auth
 from .models import hostinfo
 from django.http import HttpResponse, HttpResponseRedirect
@@ -9,8 +9,8 @@ from django.contrib.auth.models import User
 from django.db.models import Count,Sum
 import time
 from django.contrib.auth.decorators import login_required
+import os
 
-# Create your views here.
 
 def login(req):
     nowtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -117,10 +117,77 @@ def serverList(request, id=0):
                 "IP": server_li.IP if server_li.IP else "",
                 "Port": server_li.Port if server_li.Port else "",
                 "Host_user": server_li.Host_user if server_li.Host_user else "",
+                "Out_port": server_li.Out_port if server_li.Out_port else "",
             })
         return HttpResponse(json.dumps(response_data))
     return render(request, 'serverlist.html')
 
 
+@login_required
+def server_add(req):
+    result = ''
+    check_ip_info = 0
 
+    if req.method == 'POST':
+        form = autoArrMinionForm(req.POST)
+        if form.is_valid():
+            hostname = req.POST.get('add_hostname')
+            print(hostname)
+            ip = req.POST.get('add_ip')
+            port = req.POST.get('add_port')
+            print(port)
+            user = req.POST.get('add_username')
+            print(user)
+            pwd = req.POST.get('add_password')
+            print(pwd)
+            out_port = req.POST.get('add_outport')
+            print(out_port)
+            work_dir = req.POST.get('add_work_dir')
+            print(work_dir)
+            check_ip_list = hostinfo.objects.values_list('IP', flat=True)
+            for i in check_ip_list:
+                if " | " in i:
+                    check_ip_list_tow = i.split("|")
+                    if ip in check_ip_list_tow:
+                        check_ip_info = 1
+                        break
+            if ip not in check_ip_list and check_ip_info == 0:
+                u = hostinfo()
+                u.hostname = hostname
+                u.IP =ip
+                u.Port = port
+                u.Host_user = user
+                u.Password = pwd
+                u.Out_port = out_port
+                u.Work_dir = work_dir
+                u.save()
+                result = "提示：添加成功！！"
+            else:
+                result = "提示：该IP已存在！！"
+    else:
+        form = autoArrMinionForm()
 
+    re = {
+        'form':form,
+        'result':result
+    }
+    return render(req, 'serveradd.html', re)
+
+@login_required
+def exec_cmd(request,id='',s =0):
+    result = ''
+    id = int(id)
+    s = request.GET.items()
+    print(str(s))
+    print('id"' + str(id))
+    form = hostinfo.objects.all()
+    if id == 3:
+        print('--------')
+        os.system("pwd")
+        result = '执行脚本中！！！请等到10S....'
+    re = {
+        'form':form,
+        'result':result
+    }
+
+    return render(request, 'cmd.html', re)
