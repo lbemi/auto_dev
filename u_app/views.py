@@ -2,7 +2,7 @@ from django.shortcuts import render, render_to_response
 from u_app.forms import UserForm,autoArrMinionForm
 from django.contrib import auth
 from .models import hostinfo
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 import json
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
@@ -10,8 +10,7 @@ from django.db.models import Count,Sum
 import time
 from django.contrib.auth.decorators import login_required
 import os
-
-
+from django.views.decorators.csrf import csrf_exempt
 def login(req):
     nowtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     if req.method == 'GET':
@@ -174,20 +173,45 @@ def server_add(req):
     return render(req, 'serveradd.html', re)
 
 @login_required
-def exec_cmd(request,id='',s =0):
+def exec_cmd(request,id=''):
     result = ''
-    id = int(id)
-    s = request.GET.items()
-    print(str(s))
-    print('id"' + str(id))
+    # id = int(id)
+    # s = request.GET.items()
+    # print(str(s))
+    # print('id"' + str(id))
     form = hostinfo.objects.all()
-    if id == 3:
-        print('--------')
-        os.system("pwd")
-        result = '执行脚本中！！！请等到10S....'
+    # if id == 3:
+    #     print('--------')
+    #     os.system("pwd")
+    #     result = '执行脚本中！！！请等到10S....'
     re = {
         'form':form,
         'result':result
     }
 
     return render(request, 'cmd.html', re)
+
+
+
+
+@csrf_exempt
+def api(request):
+    # print(api_id)
+    data = {}
+    # print(api_id)
+    if request.method == "POST":
+        host = request.GET.get('host','0')
+        id = request.GET.get('id','0')
+        # print(api_id)
+        # if api_id == '3':
+        if host == 'test' and id == '1':
+            r = os.system('pwd')
+            result = "提示：正在执行脚本，请稍后....."
+            data = {"result":result,"name":host, "id":id}
+            return JsonResponse(data)
+        # else:
+        #     data = {"Error"}
+    else:
+        data = {"result":'sucess'}
+    print(data)
+    return render(request,'cmd.html',data)

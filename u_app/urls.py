@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^host/serverlist/(.+)/$', views.serverList, name='server_delete'),
     url(r'^host/serveradd/$', views.server_add, name='server_add'),
     url(r'^host/exec/(.+)/$', views.exec_cmd, name='exec_cmd'),
+    url(r'^api/method=exe$', views.api, name='api'),
 ]

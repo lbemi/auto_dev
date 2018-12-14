@@ -46,13 +46,16 @@
 {#                     </div>#}
 {#                    <div class="panel-body form-group" style="margin-bottom:0;">#}
 {#                    javascript:location.reload();#}
-                        <button id="btn_update" type="button" class="btn btn-default">
-                                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a href="javascript:location.reload();"  onclick="return exec()" style="color: #333333">执行更新脚本</a>
+                        <button id="btn_update" type="button" class="btn btn-default" onclick="exec()">
+                                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a  style="color: #333333">执行更新脚本</a>
                         </button>
+{#                        <button id="btn_update" type="button" class="btn btn-default">#}
+{#                                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a href="javascript:location.reload();"  onclick="return exec()" style="color: #333333">打印日志</a>#}
+{#                        </button>#}
                 </div>
                 <div style="width: 65%;background-color: #FFFFFF;height: 648px;float: left;margin: 0">
                     <pre class="language-Makefile" style="width: 100%; height: 648px; padding: 10px; text-align: left; font-size: 15px;margin: 0">
-                        <code class="language-Makefile">{{ result }}</code>
+                        <code class="language-Makefile" id="reslut"> </code>
                     </pre>
                 </div>
             </div>
@@ -67,6 +70,56 @@ function exec(){
     }else{
         return false;
     }
+}
+{#$(function () {#}
+{#    $("#btn_update").click(function () {#}
+{#        var name = $("input[name='loginname']").val();#}
+{#        var passwd = $("input[name='loginpasswd']").val();#}
+{#        var html = $.ajax({#}
+{#            type:"POST",#}
+{#            url:"api/",#}
+{#            data:JSON.stringify({'name':name,'passwd':passwd}),#}
+{#            contentType:"application/json;charset=utf-8",#}
+{#            dataType:"json",#}
+{#        }).responseText;#}
+{#        console.log(html)#}
+{#    })#}
+{#})#}
+
+$(function () {
+    $("#btn_update").on('click',function () {
+        var $host='test';
+        var $id = '1';
+        $.ajax({
+            type:"POST",
+            dataTpye:"json",
+            url:'http://127.0.0.1:8000/api/method=exe?host='+$host+'&id='+$id,
+            success:function (data) {
+                var resultData = data;
+                console.log(resultData);
+                $("#reslut").text(resultData.result);
+            }
+        })
+    })
+
+})
+
+function test() {
+    $.ajax({
+        url:"http://127.0.0.1:8000/api/",
+        type:"POST",
+        method:"POST",
+        contentType:"application/json;charset=utf-8",
+        data:JSON.stringify({'name':name,'passwd':passwd}),
+        dataType:"json",
+        success : function (result) {
+            if (result == "success"){
+                obj
+            }
+
+        }
+    })
+
 }
 </script>
 </html>
