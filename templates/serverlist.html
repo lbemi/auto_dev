@@ -43,10 +43,6 @@
                               <button id="btn_delete" type="button" class="btn btn-default">
                                   <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除
                               </button>
-
-                              <button id="btn_add" type="button" class="btn btn-default">
-                                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a href="/host/serveradd/" style="color: #333333">新增</a>
-                              </button>
                         </div>
                      </div>
                 </div>
@@ -73,7 +69,7 @@
                             pageList: [5, 10, 15, 20, 25],  //记录数可选列表
 {#                            search: true,  //是否启用查询#}
 {#                            showColumns: true,  //显示下拉框勾选要显示的列#}
-{#                            showRefresh: true,  //显示刷新按钮#}
+                            showRefresh: true,  //显示刷新按钮
                             sidePagination: "server", //表示服务端请求
                             //设置为undefined可以获取pageNumber，pageSize，searchText，sortName，sortOrder
                             //设置为limit可以获取limit, offset, search, sort, order
@@ -122,9 +118,9 @@
                                     align:'center',
                                     //列数据格式化
                                     //formatter:operateFormatter
-                                    formatter:function(value,row,serverlist){
+                                    formatter:function(value,row){
 {#                                        var e = '<a href="/host/exec/" mce_href="#" onclick="edit(\''+ row.id + '\')">执行脚本</a> ';#}
-                                        var e = '<a href="/host/exec/'+row.id+'"  mce_href="#" onclick="edit(\''+ row.id + '\')">执行脚本</a> ';
+                                        var e = '<a href="{% url "exec_q" %}'+row.hostname+'" mce_href="#" ">执行脚本</a> ';
                                         console.log(e);
                                         var d = '<a href="{% url "server_list"%}'+ row.id +'" mce_href="#" onclick="return delete_sql();">删除</a> ';
                                             return e+d;
@@ -147,7 +143,6 @@
                     $(document).ready(function () {
                         //调用函数，初始化表格
                         initTable();
-
                         //当点击查询按钮的时候执行
                         $("#search").bind("click", initTable);
                     });

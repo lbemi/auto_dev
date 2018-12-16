@@ -17,7 +17,7 @@
 {#            <img class="changeMenu" src="{% static "img/shouqicaidan.png" %}" onClick="hidMenu()">#}
             <a href="/host/serverlist/" class="qiantaishouye" style="width: 80px;">首页</a>
             <a href="" class="qingchuhuancun" style="width: 80px;">清除缓存</a>
-            <a href="/" class="tuichudenglu" style="width: 80px;">退出登录</a>
+            <a href="{% url "logout" %}" class="tuichudenglu" style="width: 80px;">退出登录</a>
         </div>
     </div>
 </div>

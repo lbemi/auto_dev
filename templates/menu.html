@@ -32,30 +32,30 @@
 					</div>
 				</li>
 				<li class="">
-					<p class="fuMenu">主机管理</p>
-                    <img class="xiala" src="{% static "img/xiala.png" %}" />
-                    <div class="div1">
-                        <p class="zcd" id="zcd10"><a href="/webserver/cmdb/hostadmin/">批量管理</a></p>
-                    </div>
-				</li>
-				<li class="">
-					<p class="fuMenu">监控系统</p>
-					<img class="xiala" src="{% static "img/xiala.png" %}" />
-					<div class="div1">
+{#					<p class="fuMenu">主机管理</p>#}
+{#                    <img class="xiala" src="{% static "img/xiala.png" %}" />#}
+{#                    <div class="div1">#}
+{#                        <p class="zcd" id="zcd10"><a href="/webserver/cmdb/hostadmin/">批量管理</a></p>#}
+{#                    </div>#}
+{#				</li>#}
+{#				<li class="">#}
+{#					<p class="fuMenu">监控系统</p>#}
+{#					<img class="xiala" src="{% static "img/xiala.png" %}" />#}
+{#					<div class="div1">#}
 {#                        <p class="zcd" id="zcd19"><a href="{% url 'monitor' %}">健康状态监控</a></p>#}
-					</div>
-				</li>
-				<li class="">
-					<p class="fuMenu">权限管理</p>
-					<img class="xiala" src="{% static "img/xiala.png" %}" />
-					<div class="div1">
-                        <p class="zcd" id="zcd19"><a href="/webserver/user/list/">用户管理</a></p>
+{#					</div>#}
+{#				</li>#}
+{#				<li class="">#}
+{#					<p class="fuMenu">权限管理</p>#}
+{#					<img class="xiala" src="{% static "img/xiala.png" %}" />#}
+{#					<div class="div1">#}
+{#                        <p class="zcd" id="zcd19"><a href="/webserver/user/list/">用户管理</a></p>#}
 {#						<p class="zcd" id="zcd20"><a href="/webserver/user/role/">角色管理</a></p>#}
 {#						<p class="zcd" id="zcd19"><a href="/webserver/user/power/">权限管理</a></p>#}
-					</div>
-				</li>
+{#					</div>#}
+{#				</li>#}
 				<li class="">
-					<p class="fuMenu"><a href="/webserver/logout/">退出</a></p>
+					<p class="fuMenu"><a href="{% url "logout" %}">退出</a></p>
 				</li>
 			</ul>
 		</div>

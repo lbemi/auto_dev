@@ -8,50 +8,39 @@
 {% include "header.html" %}
 {% include 'menu.html' %}
 <body>
+{% csrf_token %}
 <div class="home">
     <div class="home_right">
         <div class="homepage">
-            <div class="ptbt"><a>执行脚本</a></div>
+            <div class="ptbt"><a>主机：{{ form.hostname }} </a></div>
         </div>
         <div class="user_list">
             <div class="user_list_ls">
                 <div class="panel panel-default" style="width:34.5%;float: left;height:648px;margin-right: 0.5%;">
-{#                    <div class="panel-heading">#}
-{#                        添加主机#}
-{#                    </div>#}
-{#                    <div class="panel-body form-group" style="margin-bottom:0px;">#}
-{#                        <label class="col-sm-1 control-label" style="text-align: right; margin-top:5px">主机名：</label>#}
-{#                        <div class="col-sm-2">#}
-{#                            <input type="text" class="form-control" name="Name" id="search_name"/>#}
-{#                        </div>#}
-{#                        <label class="col-sm-1 control-label" style="text-align: right; margin-top:5px">IP：</label>#}
-{#                        <div class="col-sm-2">#}
-{#                            <input type="text" class="form-control" name="Name" id="search_ip"/>#}
-{#                        </div>#}
-{#                        <div class="col-sm-1 col-sm-offset-2">#}
-{#                            <button class="btn btn-primary" id="search_btn">查询</button>#}
-{#                        </div>#}
-{#                        <div id="toolbar" class="btn-group pull-right" style="margin-right: 5px;">#}
-{#                             <button id="btn_edit" type="button" class="btn btn-default" style="border-radius: 0">#}
-{#                                 <span class="glyphicon glyphicon-pencil" aria-hidden="true" ></span>执行脚本#}
-{#                             </button>#}
-{#                              <button id="btn_delete" type="button" class="btn btn-default">#}
-{#                                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除#}
-{#                              </button>#}
-{##}
-{#                              <button id="btn_add" type="button" class="btn btn-default">#}
-{#                                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a href="/host/serveradd/" style="color: #333333">新增</a>#}
-{#                              </b utton>#}
-{#                        </div>#}
-{#                     </div>#}
-{#                    <div class="panel-body form-group" style="margin-bottom:0;">#}
-{#                    javascript:location.reload();#}
-                        <button id="btn_update" type="button" class="btn btn-default" onclick="exec()">
-                                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a  style="color: #333333">执行更新脚本</a>
-                        </button>
-{#                        <button id="btn_update" type="button" class="btn btn-default">#}
-{#                                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a href="javascript:location.reload();"  onclick="return exec()" style="color: #333333">打印日志</a>#}
-{#                        </button>#}
+                    <div>
+                        <p>
+                            <label >IP：</label>
+                            <label >{{ form.IP }}</label>
+                        </p>
+                        <p>
+                            <label >端口：</label>
+                            <label >{{ form.Port }}</label>
+                        </p>
+                        <p>
+                            <label >服务对应端口：</label>
+                            <label >{{ form.Out_port }}</label>
+                        </p>
+                        <p>
+                            <button id="btn_update" type="button" class="btn btn-default" onclick="exec(1)">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a  style="color: #333333">执行更新脚本</a>
+                            </button>
+                            <button id="btn_update" type="button" class="btn btn-default" onclick="exec(2)">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a  style="color: #333333">打印日志</a>
+                            </button>
+                        </p>
+
+                    </div>
+
                 </div>
                 <div style="width: 65%;background-color: #FFFFFF;height: 648px;float: left;margin: 0">
                     <pre class="language-Makefile" style="width: 100%; height: 648px; padding: 10px; text-align: left; font-size: 15px;margin: 0">
@@ -64,61 +53,65 @@
 </div>
 </body>
 <script>
-function exec(){
+function exec(a){
     if(confirm("您确定要执行脚本吗?")){
-        return true;
+        var $host = window.location.pathname.split("/")[3];
+        var $id = a;
+        $.ajax({
+            type:"GET",
+            dataTpye:"json",
+            csrfmiddlewaretoken :$("input[name='csrfmiddlewaretoken']").val(),
+            url:'{% url 'api' %}?host='+$host+'&id='+$id,
+            success:function (data) {
+                var resultData = data;
+                console.log(resultData);
+                var t = new Date();
+                var s = '['+ t.getHours()+':'+t.getMinutes()+':'+t.getSeconds()+']';
+                $("#reslut").append('<p>'+s +' : '+resultData.result+'<p>');
+            }
+    })
     }else{
         return false;
     }
 }
-{#$(function () {#}
-{#    $("#btn_update").click(function () {#}
-{#        var name = $("input[name='loginname']").val();#}
-{#        var passwd = $("input[name='loginpasswd']").val();#}
-{#        var html = $.ajax({#}
-{#            type:"POST",#}
-{#            url:"api/",#}
-{#            data:JSON.stringify({'name':name,'passwd':passwd}),#}
-{#            contentType:"application/json;charset=utf-8",#}
-{#            dataType:"json",#}
-{#        }).responseText;#}
-{#        console.log(html)#}
-{#    })#}
-{#})#}
-
-$(function () {
-    $("#btn_update").on('click',function () {
-        var $host='test';
-        var $id = '1';
-        $.ajax({
-            type:"POST",
-            dataTpye:"json",
-            url:'http://127.0.0.1:8000/api/method=exe?host='+$host+'&id='+$id,
-            success:function (data) {
-                var resultData = data;
-                console.log(resultData);
-                $("#reslut").text(resultData.result);
-            }
-        })
-    })
-
-})
-
-function test() {
+function req(a) {
+    var line = '3'
     $.ajax({
-        url:"http://127.0.0.1:8000/api/",
-        type:"POST",
-        method:"POST",
-        contentType:"application/json;charset=utf-8",
-        data:JSON.stringify({'name':name,'passwd':passwd}),
-        dataType:"json",
-        success : function (result) {
-            if (result == "success"){
-                obj
+        type:"GET",
+        dataTpye:"text",
+        csrfmiddlewaretoken :$("input[name='csrfmiddlewaretoken']").val(),
+        url:'{% url 'api' %}?host='+$host+'&id='+$id + '&line='+line,
+        success:function (data) {
+            if(data!=500){
+                $("#reslut").append('<p>'+data+'</p>');
+                var t = setInterval(function () {
+                    line++;
+                    $.ajax({
+                        url:'{% url 'api' %}?host='+$host+'&id='+$id + '&line='+line,
+                        type:"GET",
+                        success:function (data) {
+                            if(data!=500){
+                                $('#reslut').append('<p>'+data+'</p>')
+                                window.scrollTo(0,document.body.scrollHeight)
+                            }else {
+                                clearInterval(t)
+                            }
+                        },
+                        error:function (data) {
+                            myalert();
+                            return false;
+                        }
+                    });
+                },200);
+            }else {
+                myalert()
             }
-
+        },
+        errot:function (data) {
+            myalert();
+            return false;
         }
-    })
+    });
 
 }
 </script>

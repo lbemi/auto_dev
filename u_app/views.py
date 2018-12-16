@@ -11,6 +11,20 @@ import time
 from django.contrib.auth.decorators import login_required
 import os
 from django.views.decorators.csrf import csrf_exempt
+import subprocess
+from django.template.context_processors import csrf
+from u_app.shell_pack import script
+
+@csrf_exempt
+def page_not_found(request):
+    return render(request,'404.html')
+@csrf_exempt
+def page_error(request):
+    '''
+    500报错页面
+    '''
+    return render(request,'500.html')
+
 def login(req):
     nowtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     if req.method == 'GET':
@@ -21,6 +35,8 @@ def login(req):
         if uf.is_valid():
             username = req.POST.get('username', '')
             password = req.POST.get('password', '')
+            req.session['username'] = username
+            req.session['password'] = password
             user = auth.authenticate(username=username, password=password)
             if user is not None and user.is_active:
                 auth.login(req, user)
@@ -32,14 +48,16 @@ def login(req):
     return render(request, 'login.html')
 @login_required
 def index(req):
+    # print(req.session.get('username'))
     return render(req, 'index.html')
 @login_required
 def logout(req):
 
     auth.logout(req)
-    return HttpResponseRedirect('login.html')
+    return HttpResponseRedirect('/login/')
 @login_required
 def serverList(request, id=0):
+    print(request.session.get('username'))
     if id != 0:
         hostinfo.objects.filter(id = id).delete()
 
@@ -173,45 +191,54 @@ def server_add(req):
     return render(req, 'serveradd.html', re)
 
 @login_required
-def exec_cmd(request,id=''):
+def exec_cmd(request,hostname):
     result = ''
-    # id = int(id)
-    # s = request.GET.items()
-    # print(str(s))
-    # print('id"' + str(id))
-    form = hostinfo.objects.all()
-    # if id == 3:
-    #     print('--------')
-    #     os.system("pwd")
-    #     result = '执行脚本中！！！请等到10S....'
+    form = hostinfo.objects.get(hostname=hostname)
     re = {
         'form':form,
         'result':result
     }
-
+    request.session['info'] = form.Port
     return render(request, 'cmd.html', re)
 
 
 
 
-@csrf_exempt
+@login_required
 def api(request):
-    # print(api_id)
-    data = {}
-    # print(api_id)
-    if request.method == "POST":
-        host = request.GET.get('host','0')
-        id = request.GET.get('id','0')
-        # print(api_id)
-        # if api_id == '3':
-        if host == 'test' and id == '1':
-            r = os.system('pwd')
-            result = "提示：正在执行脚本，请稍后....."
-            data = {"result":result,"name":host, "id":id}
-            return JsonResponse(data)
-        # else:
-        #     data = {"Error"}
+    result = "正在执行脚本，请稍后....."
+    if request.method == "GET":
+        host = request.GET.get('host','None')
+        id = request.GET.get('id','None')
+        result = script.update(host, id)
+        data = {"result": result, "name": host, "id": id}
+        ss = request.session.get('info', None)
+        print(ss)
+        return JsonResponse(data)
     else:
-        data = {"result":'sucess'}
-    print(data)
+        data = {"result":result}
+    print('seeeee--------')
+
     return render(request,'cmd.html',data)
+
+
+def ajxGetlog(requst):
+    res = subprocess.Popen("tail -f  /home/wjl/test.log",shell=True)
+    if not res[1]:
+        try:
+            if int(res[0])>20:
+                line = int(res[0])-20
+            if int(res[0]) == 0:
+                line = 1
+            return render(requst, 'cmd.html',{'line':line})
+        except Exception as e:
+            print('Error:'+ str(e))
+    else:
+        return HttpResponse(res[1])
+
+def ajxGetLogHandle(rquest, line):
+    res = subprocess.Popen("sed -n '$p' /home/wjl/Desktop/book.html ", shell=True)
+    if not res[1] and res[0].strip():
+        return HttpResponse(res[0])
+    else:
+        return HttpResponse(500)
