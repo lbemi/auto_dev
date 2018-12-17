@@ -32,10 +32,10 @@
                         </p>
                         <p>
                             <button id="btn_update" type="button" class="btn btn-default" onclick="exec(1)">
-                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a  style="color: #333333">执行更新脚本</a>
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a  style="color: #333333">更新mzservice,mzapi</a>
                             </button>
                             <button id="btn_update" type="button" class="btn btn-default" onclick="exec(2)">
-                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a  style="color: #333333">打印日志</a>
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a  style="color: #333333">更新zbiz</a>
                             </button>
                         </p>
 
@@ -57,6 +57,9 @@ function exec(a){
     if(confirm("您确定要执行脚本吗?")){
         var $host = window.location.pathname.split("/")[3];
         var $id = a;
+        var t = new Date();
+        var s = '['+ t.getHours()+':'+t.getMinutes()+':'+t.getSeconds()+']';
+        $("#reslut").append('<p>'+s +' : '+'正在执行脚本，请稍等......'+'<p>');
         $.ajax({
             type:"GET",
             dataTpye:"json",
@@ -65,8 +68,8 @@ function exec(a){
             success:function (data) {
                 var resultData = data;
                 console.log(resultData);
-                var t = new Date();
-                var s = '['+ t.getHours()+':'+t.getMinutes()+':'+t.getSeconds()+']';
+{#                var t = new Date();#}
+{#                var s = '['+ t.getHours()+':'+t.getMinutes()+':'+t.getSeconds()+']';#}
                 $("#reslut").append('<p>'+s +' : '+resultData.result+'<p>');
             }
     })
